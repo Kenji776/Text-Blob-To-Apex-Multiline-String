@@ -1,0 +1,84 @@
+<html>
+	<head>
+		<script>
+			function formatText(){	
+				try{
+					let inputText = document.getElementById('inputText').value;
+					let newLines = [];
+
+					let formatJSON = document.getElementsByName('formatJSON')[0].checked;
+					let formatXML = document.getElementsByName('formatXML')[0].checked;
+					
+					if(formatJSON){
+					console.log('Formatting JSON');
+						try{
+							let parsed = JSON.parse(inputText);
+							inputText = JSON.stringify(parsed,null,2);
+						}catch(error){
+						console.log(error);
+							throw "Bad JSON: " + error.message; 
+						}
+					}else if(formatXML){
+						console.log('Formatting XML');
+						try{
+							inputText = formatXml(inputText);
+						}catch(error){
+						console.log(error);
+							throw "Bad XML: " + error.message; 
+						}
+					}
+					
+					let  lines = inputText.split(/\r?\n/);
+					
+					lines.forEach((line) => {
+						console.log(line);
+						newLines.push ("' "+line+" ' +");
+					});
+					
+
+					
+					let textBlob = newLines.join('\r\n');
+			
+					textBlob = textBlob.substring(0, textBlob.length - 1);
+					
+					textBlob = 'string myVar = ' + textBlob + ';';
+					
+					document.getElementById('outputText').value = textBlob;
+				}catch(error){
+					alert(error);
+				}
+			}
+			
+			function formatXml(xml, tab) { // tab = optional indent value, default is tab (\t)
+				var formatted = '', indent= '';
+				tab = tab || '\t';
+				xml.split(/>\s*</).forEach(function(node) {
+					if (node.match( /^\/\w/ )) indent = indent.substring(tab.length); // decrease indent by one 'tab'
+					formatted += indent + '<' + node + '>\r\n';
+					if (node.match( /^<?\w[^>]*[^\/]$/ )) indent += tab;              // increase indent
+				});
+				return formatted.substring(1, formatted.length-3);
+			}
+		</script>
+	</head>
+	
+	<body>
+		<center><h1>Text Blob To Apex Multiline String Tool</h1></center>
+		<p>Takes a text blob like a JSON or XML payload and formats it as an Apex multiline string suitable for pasing into a test class for testing parsing/extracting values/etc</p>
+		
+		<form>      
+			<fieldset>      
+				<legend>Options</legend>      
+				<input type="radio" name="formatJSON" value="true" onChange="formatText();">Format/Prettyify JSON<br>
+				<input type="radio" name="formatXML" value="true" onChange="formatText();">Format/Prettyify XML<br>				
+			</fieldset>      
+		</form>
+
+		<h2>Input Text</h2>
+		<textarea id="inputText" onKeyUp="formatText();" rows="40" style="width:100%"></textarea>
+		<h2>Apex Formatted String</h2>
+		<textarea id="outputText"rows="40" style="width:100%"></textarea>
+	</body>
+	
+	
+</html>
