@@ -4,10 +4,12 @@
 			function formatText(){	
 				try{
 					let inputText = document.getElementById('inputText').value;
+					
+					if(!inputText || inputText == '') return;
 					let newLines = [];
 
-					let formatJSON = document.getElementsByName('formatJSON')[0].checked;
-					let formatXML = document.getElementsByName('formatXML')[0].checked;
+					let formatJSON = document.getElementById('formatJSON').checked;
+					let formatXML = document.getElementById('formatXML').checked;
 					
 					if(formatJSON){
 					console.log('Formatting JSON');
@@ -68,9 +70,10 @@
 		
 		<form>      
 			<fieldset>      
-				<legend>Options</legend>      
-				<input type="radio" name="formatJSON" value="true" onChange="formatText();">Format/Prettyify JSON<br>
-				<input type="radio" name="formatXML" value="true" onChange="formatText();">Format/Prettyify XML<br>				
+				<legend>Options</legend> 
+				<input type="radio" name="formatting" id="generalFormat" value="true" onChange="formatText();" checked>General Formatting<br>	
+				<input type="radio" name="formatting" id="formatJSON" value="true" onChange="formatText();">Format/Prettyify JSON<br>
+				<input type="radio" name="formatting" id="formatXML" value="true" onChange="formatText();">Format/Prettyify XML<br>				
 			</fieldset>      
 		</form>
 
